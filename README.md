@@ -1,70 +1,123 @@
 # dss-proxy-actions
-Proxy functions to be used via ds-proxy. These functions are based on `dss-cdp-manager` as CDP registry.
+
+Proxy functions to be used via ds-proxy. These functions are based on
+`dss-cdp-manager` as CDP registry.
 
 https://github.com/makerdao/dss-proxy-actions
 
-`open(address manager, bytes32 ilk)`: creates an `UrnHandler` (`cdp`) for the caller (for a specific `ilk`) and allows to manage it via the internal registry of the `manager`.
+`open(address manager, bytes32 ilk)`: creates an `UrnHandler` (`cdp`) for the
+caller (for a specific `ilk`) and allows to manage it via the internal registry
+of the `manager`.
 
-`give(address manager, uint cdp, address usr)`: transfers the ownership of `cdp` to `usr` address in the `manager` registry.
+`give(address manager, uint cdp, address usr)`: transfers the ownership of `cdp`
+to `usr` address in the `manager` registry.
 
-`giveToProxy(address proxyRegistry, address manager, uint cdp, address usr)`: transfers the ownership of `cdp` to the proxy of `usr` address (via `proxyRegistry`) in the `manager` registry.
+`giveToProxy(address proxyRegistry, address manager, uint cdp, address usr)`:
+transfers the ownership of `cdp` to the proxy of `usr` address (via
+`proxyRegistry`) in the `manager` registry.
 
-`cdpAllow(address manager, uint cdp, address usr, uint ok)`: allows/denies `usr` address to manage the `cdp`.
+`cdpAllow(address manager, uint cdp, address usr, uint ok)`: allows/denies `usr`
+address to manage the `cdp`.
 
-`urnAllow(address manager, address usr, uint ok)`: allows/denies `usr` address to manage the `msg.sender` address as `dst` for `quit`.
+`urnAllow(address manager, address usr, uint ok)`: allows/denies `usr` address
+to manage the `msg.sender` address as `dst` for `quit`.
 
-`flux(address manager, uint cdp, address dst, uint wad)`: moves `wad` amount of collateral from `cdp` address to `dst` address.
+`flux(address manager, uint cdp, address dst, uint wad)`: moves `wad` amount of
+collateral from `cdp` address to `dst` address.
 
-`move(address manager, uint cdp, address dst, uint rad)`: moves `rad` amount of DAI from `cdp` address to `dst` address.
+`move(address manager, uint cdp, address dst, uint rad)`: moves `rad` amount of
+DAI from `cdp` address to `dst` address.
 
-`frob(address manager, uint cdp, int dink, int dart)`: executes `frob` to `cdp` address assigning the collateral freed and/or DAI drawn to the same address.
+`frob(address manager, uint cdp, int dink, int dart)`: executes `frob` to `cdp`
+address assigning the collateral freed and/or DAI drawn to the same address.
 
-`frob(address manager, uint cdp, address dst, int dink, int dart)`: executes `frob` to `cdp` address assigning the collateral freed or DAI drawn to `dst` address.
+`frob(address manager, uint cdp, address dst, int dink, int dart)`: executes
+`frob` to `cdp` address assigning the collateral freed or DAI drawn to `dst`
+address.
 
-`quit(address manager, uint cdp, address dst)`: moves `cdp` collateral balance and debt to `dst` address.
+`quit(address manager, uint cdp, address dst)`: moves `cdp` collateral balance
+and debt to `dst` address.
 
-`lockETH(address manager, address ethJoin, uint cdp)`: deposits `msg.value` amount of ETH in `ethJoin` adapter and executes `frob` to `cdp` increasing the locked value.
+`enter(address manager, address src, uint cdp)`: moves `src` collateral balance
+and debt to `cdp`.
 
-`safeLockETH(address manager, address ethJoin, uint cdp)`: same than `lockETH` but requiring `this == cdp owner`.
+`shift(address manager, uint cdpSrc, uint cdpDst)`: moves `cdpSrc` collateral
+balance and debt to `cdpDst`.
 
-`lockGem(address manager, address gemJoin, uint cdp, uint wad, bool transferFrom)`: deposits `wad` amount of collateral in `gemJoin` adapter and executes `frob` to `cdp` increasing the locked value. Gets funds from `msg.sender` if `transferFrom == true`.
+`lockETH(address manager, address ethJoin, uint cdp)`: deposits `msg.value`
+amount of ETH in `ethJoin` adapter and executes `frob` to `cdp` increasing the
+locked value.
 
-`safeLockGem(address manager, address gemJoin, uint cdp, uint wad, bool transferFrom)`: same than `lockGem` but requiring `this == cdp owner`.
+`safeLockETH(address manager, address ethJoin, uint cdp, address owner)`: same
+than `lockETH` but requiring `owner == cdp owner`.
 
-`freeETH(address manager, address ethJoin, uint cdp, uint wad)`: executes `frob` to `cdp` decreasing locked collateral and withdraws `wad` amount of ETH from `ethJoin` adapter.
+`lockGem(address manager, address gemJoin, uint cdp, uint wad, bool transferFrom)`:
+deposits `wad` amount of collateral in `gemJoin` adapter and executes `frob` to
+`cdp` increasing the locked value. Gets funds from `msg.sender` if
+`transferFrom == true`.
 
-`freeGem(address manager, address gemJoin, uint cdp, uint wad)`: executes `frob` to `cdp` decreasing locked collateral and withdraws `wad` amount of collateral from `gemJoin` adapter.
+`safeLockGem(address manager, address gemJoin, uint cdp, uint wad, bool transferFrom, address owner)`:
+same than `lockGem` but requiring `owner == cdp owner`.
 
-`draw(address manager, address jug, address daiJoin, uint cdp, uint wad)`: updates collateral fee rate, executes `frob` to `cdp` increasing debt and exits `wad` amount of DAI token (minting it) from `daiJoin` adapter.
+`freeETH(address manager, address ethJoin, uint cdp, uint wad)`: executes `frob`
+to `cdp` decreasing locked collateral and withdraws `wad` amount of ETH from
+`ethJoin` adapter.
 
-`wipe(address manager, address daiJoin, uint cdp, uint wad)`: joins `wad` amount of DAI token to `daiJoin` adapter (burning it) and executes `frob` to `cdp` for decreasing debt.
+`freeGem(address manager, address gemJoin, uint cdp, uint wad)`: executes `frob`
+to `cdp` decreasing locked collateral and withdraws `wad` amount of collateral
+from `gemJoin` adapter.
 
-`safeWipe(address manager, address daiJoin, uint cdp, uint wad)`: same than `wipe` but requiring `this == cdp owner` and in some cases has a better management of dust in the `urn` of the `cdp`.
+`draw(address manager, address jug, address daiJoin, uint cdp, uint wad)`:
+updates collateral fee rate, executes `frob` to `cdp` increasing debt and exits
+`wad` amount of DAI token (minting it) from `daiJoin` adapter.
 
-`wipeAll(address manager, address daiJoin, uint cdp)`: joins all the necessary amount of DAI token to `daiJoin` adapter (burning it) and executes `frob` to `cdp` setting the debt to zero.
+`wipe(address manager, address daiJoin, uint cdp, uint wad)`: joins `wad` amount
+of DAI token to `daiJoin` adapter (burning it) and executes `frob` to `cdp` for
+decreasing debt.
 
-`safeWipeAll(address manager, address daiJoin, uint cdp)`: same than `wipeAll` but requiring `this == cdp owner` and in some cases has a better management of dust in the `urn` of the `cdp`.
+`safeWipe(address manager, address daiJoin, uint cdp, uint wad, address owner)`:
+same than `wipe` but requiring `owner == cdp owner`.
 
-`lockETHAndDraw(address manager, address jug, address ethJoin, address daiJoin, uint cdp, uint wadD)`: combines `lockETH` and `draw`.
+`wipeAll(address manager, address daiJoin, uint cdp)`: joins all the necessary
+amount of DAI token to `daiJoin` adapter (burning it) and executes `frob` to
+`cdp` setting the debt to zero.
 
-`openLockETHAndDraw(address manager, address jug, address ethJoin, address daiJoin, bytes32 ilk, uint wadD)`: combines `open`, `lockETH` and `draw`.
+`safeWipeAll(address manager, address daiJoin, uint cdp, address owner)`: same
+than `wipeAll` but requiring `owner == cdp owner`.
 
-`lockGemAndDraw(address manager, address jug, address gemJoin, address daiJoin, uint cdp, uint wadC, uint wadD, bool transferFrom)`: combines `lockGem` and `draw`.
+`lockETHAndDraw(address manager, address jug, address ethJoin, address daiJoin, uint cdp, uint wadD)`:
+combines `lockETH` and `draw`.
 
-`openLockGemAndDraw(address manager, address jug, address gemJoin, address daiJoin, bytes32 ilk, uint wadC, uint wadD, bool transferFrom)`: combines `open`, `lockGem` and `draw`.
+`openLockETHAndDraw(address manager, address jug, address ethJoin, address daiJoin, bytes32 ilk, uint wadD)`:
+combines `open`, `lockETH` and `draw`.
 
-`wipeAndFreeETH(address manager, address ethJoin, address daiJoin, uint cdp, uint wadC, uint wadD)`: combines `wipe` and `freeETH`.
+`lockGemAndDraw(address manager, address jug, address gemJoin, address daiJoin, uint cdp, uint wadC, uint wadD, bool transferFrom)`:
+combines `lockGem` and `draw`.
 
-`wipeAllAndFreeETH(address manager, address ethJoin, address daiJoin, uint cdp, uint wadC)`: combines `wipeAll` and `freeETH`.
+`openLockGemAndDraw(address manager, address jug, address gemJoin, address daiJoin, bytes32 ilk, uint wadC, uint wadD, bool transferFrom)`:
+combines `open`, `lockGem` and `draw`.
 
-`wipeAndFreeGem(address manager, address gemJoin, address daiJoin, uint cdp, uint wadC, uint wadD)`: combines `wipe` and `freeGem`.
+`wipeAndFreeETH(address manager, address ethJoin, address daiJoin, uint cdp, uint wadC, uint wadD)`:
+combines `wipe` and `freeETH`.
 
-`wipeAllAndFreeGem(address manager, address gemJoin, address daiJoin, uint cdp, uint wadC)`: combines `wipeAll` and `freeGem`.
+`wipeAllAndFreeETH(address manager, address ethJoin, address daiJoin, uint cdp, uint wadC)`:
+combines `wipeAll` and `freeETH`.
 
-`dsrJoin(address daiJoin, address pot, uint wad)`: joins `wad` amount of DAI token to `daiJoin` adapter (burning it) and moves balance to `pot` for DAI Saving Rates.
+`wipeAndFreeGem(address manager, address gemJoin, address daiJoin, uint cdp, uint wadC, uint wadD)`:
+combines `wipe` and `freeGem`.
 
-`dsrExit(address daiJoin, address pot, uint wad)`: retrieves `wad` amount of DAI from `pot` and exits DAI token from `daiJoin` adapter (minting it).
+`wipeAllAndFreeGem(address manager, address gemJoin, address daiJoin, uint cdp, uint wadC)`:
+combines `wipeAll` and `freeGem`.
 
-`dsrExitAll(address daiJoin, address pot)`: same than `dsrExit` but all the available amount.
+`dsrJoin(address daiJoin, address pot, uint wad)`: joins `wad` amount of DAI
+token to `daiJoin` adapter (burning it) and moves balance to `pot` for DAI
+Saving Rates.
 
-`openLockGNTAndDraw(address manager, address jug, address gntJoin, address daiJoin, bytes32 ilk, uint wadC, uint wadD)`: like `openLockGemAndDraw` but specially for GNT token.
+`dsrExit(address daiJoin, address pot, uint wad)`: retrieves `wad` amount of DAI
+from `pot` and exits DAI token from `daiJoin` adapter (minting it).
+
+`dsrExitAll(address daiJoin, address pot)`: same than `dsrExit` but all the
+available amount.
+
+`openLockGNTAndDraw(address manager, address jug, address gntJoin, address daiJoin, bytes32 ilk, uint wadC, uint wadD)`:
+like `openLockGemAndDraw` but specially for GNT token.
